@@ -26,16 +26,14 @@
       <li class="list-group-item">Item 2</li>
       <li class="list-group-item">Item 3</li>
       <li class="list-group-item">Item 4</li>
+      <li >Item 5</li>
     </ul>
    </div>
   </div>
 <script>
-    let list = document.getElementsByClassName("list-group-item")
-    let third = list[2]
-    third.style.backgroundColor = 'green'
-    for(let node of list){
-        node.style.fontWeight = 'bold'
-    }
+    let listByClass = document.getElementsByClassName("list-group-item")
+    let list = document.getElementsByTagName('li')
+    list[4].style.backgroundColor = 'green'
 </script>
 </body>
 </html>
