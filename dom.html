@@ -31,9 +31,12 @@
    </div>
   </div>
 <script>
-    let listByClass = document.getElementsByClassName("list-group-item")
-    let list = document.getElementsByTagName('li')
-    list[4].style.backgroundColor = 'green'
+    let list = document.querySelectorAll('li');
+    list[1].style.color ='green'
+    let odd = document.querySelectorAll('li:nth-child(odd)');
+    for(let oddLi of odd){
+        oddLi.style.backgroundColor = 'green';
+    }
 </script>
 </body>
 </html>
