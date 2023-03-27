@@ -29,17 +29,13 @@
     </ul>
    </div>
   </div>
-  <script>
-    const title =document.getElementById('header-title');
-    title.style.border ='4px solid black'
-    const newItem = document.createElement("li");
-    newItem.textContent = "New Item 5";
-    newItem.classList.add('list-group-item')
-    newItem.style.fontWeight = "bold";
-    newItem.style.color = "green";
-    const list = document.getElementById("items");
-    list.appendChild(newItem);
-    console.log(list)
-  </script>
+<script>
+    let list = document.getElementsByClassName("list-group-item")
+    let third = list[2]
+    third.style.backgroundColor = 'green'
+    for(let node of list){
+        node.style.fontWeight = 'bold'
+    }
+</script>
 </body>
 </html>
