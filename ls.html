@@ -48,7 +48,7 @@
         }
         ol {
             background-color: rgba(0, 0, 0, 0.2);
-            color: green;
+            color: white;
             width: 50vw;
             translate: 50%;
             border-radius: 4rem;
@@ -71,8 +71,7 @@
             <button type="submit">Submit</button>
         </form>
         <h2>People Info</h2>
-        <ol id="people">
-            
+        <ol id="people"> 
         </ol>
     <script>
 		const callForm = document.getElementById('call-form');
@@ -80,7 +79,15 @@
 		const nameInput = callForm.querySelector('input[name="name"]');
 		const emailInput = callForm.querySelector('input[name="email"]');
 		const phoneInput = callForm.querySelector('input[name="phone"]');
+        const people = document.getElementById('people')
 
+        people.addEventListener('click',function(event){
+            const email = event.target.id;
+            const item = event.target.parentNode;
+            item.parentNode.removeChild(item);
+            localStorage.removeItem(email);
+            
+        })
 		callForm.addEventListener('submit', function(event) {
 			event.preventDefault();
 			const formData = {
@@ -88,14 +95,14 @@
 				email: emailInput.value,
 				phone: phoneInput.value,
 			}
-            const item = document.createElement('li');
-            item.innerHTML = `${formData.name} ${formData.email} ${formData.phone}`;
-            const people = document.getElementById('people')
-            people.appendChild(item);
+            
 			callForm.reset();
             window.alert(`Form submit successfully`)
 			const formDataJson = JSON.stringify(formData);
 			localStorage.setItem(formData.email,formDataJson);
+            const item = document.createElement('li');
+            item.innerHTML = `${formData.name}-${formData.email}-${formData.phone} <button id='${formData.email}'>delete</button>`;
+            people.appendChild(item);
 		});
 	</script>
 </body>
