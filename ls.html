@@ -57,10 +57,15 @@
             padding: 2rem;
             font-weight: bolder;
             font-size: large;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-direction: row;
+            row-gap: 1rem;
         }
 	</style>
 </head>
-<body>
+<body onload="getData()">
         <form id="call-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -82,11 +87,18 @@
         const people = document.getElementById('people')
 
         people.addEventListener('click',function(event){
-            const email = event.target.id;
             const item = event.target.parentNode;
+            const email = item.id;
+            if(event.target.classList.contains('edit')){
+                const data = localStorage.getItem(email);
+                const obj = JSON.parse(data);
+                console.log(obj);
+                nameInput.value = obj.name;
+				emailInput.value = obj.email;
+				phoneInput.value = obj.phone;
+            }
             item.parentNode.removeChild(item);
             localStorage.removeItem(email);
-            
         })
 		callForm.addEventListener('submit', function(event) {
 			event.preventDefault();
@@ -101,9 +113,21 @@
 			const formDataJson = JSON.stringify(formData);
 			localStorage.setItem(formData.email,formDataJson);
             const item = document.createElement('li');
-            item.innerHTML = `${formData.name}-${formData.email}-${formData.phone} <button id='${formData.email}'>delete</button>`;
+            item.id = formData.email;
+            item.innerHTML = `${formData.name}-${formData.email}-${formData.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
             people.appendChild(item);
 		});
+        function getData(){
+            for(let email in localStorage){
+                const data = localStorage.getItem(email);
+                const obj = JSON.parse(data);
+                const item = document.createElement('li');
+                item.id = email;
+                item.innerHTML = `${obj.name}-${obj.email}-${obj.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
+                people.appendChild(item);
+                
+            }
+        }
 	</script>
 </body>
 </html>
