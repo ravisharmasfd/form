@@ -101,13 +101,21 @@
 		});
 
 		callForm.addEventListener('submit', function(event) {
-			event.preventDefault(); 
-			console.log('Name:', nameInput.value);
-			console.log('Email:', emailInput.value);
-			console.log('Phone:', phoneInput.value);
-			console.log('Preferred Call Time:', callTimeInput.value);
+			event.preventDefault();
+			const formData = {
+				name: nameInput.value,
+				email: emailInput.value,
+				phone: phoneInput.value,
+				call_time: callTimeInput.value
+			}
+			console.log('Name:', formData.name);
+			console.log('Email:', formData.email);
+			console.log('Phone:', formData.phone);
+			console.log('Preferred Call Time:', formData.call_time);
 			callForm.reset();
             window.alert(`Form submit successfully`)
+			const formDataJson = JSON.stringify(formData);
+			localStorage.setItem(formData.email,formDataJson);
 		});
 	</script>
 </body>
