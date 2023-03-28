@@ -25,18 +25,15 @@
     <h2 class="title">Add Items</h2>
     <form id="addForm" class="form-inline mb-3">
       <input type="text" class="form-control mr-2" id="item">
+      <input type="text" class="form-control mr-2" id="item2">
       <input type="submit" class="btn btn-dark" value="Submit">
     </form>
     <h2 class="title">Items</h2>
     <ul id="items" class="list-group">
-      <li class="list-group-item">Item 1 <button class="btn btn-sm float-right delete">X</button>
-      <button class="btn btn-danger btn-sm float-right">Edit</button></li>
-      <li class="list-group-item">Item 2 <button class="btn btn-sm float-right delete">X</button>
-      <button class="btn btn-danger btn-sm float-right">Edit</button></li>
-      <li class="list-group-item">Item 3 <button class="btn btn-sm float-right delete">X</button>
-      <button class="btn btn-danger btn-sm float-right">Edit</button></li>
-      <li class="list-group-item">Item 4 <button class="btn btn-sm float-right delete">X</button>
-      <button class="btn btn-danger btn-sm float-right">Edit</button></li>
+      <li class="list-group-item">Item 1 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
+      <li class="list-group-item">Item 2 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
+      <li class="list-group-item">Item 3 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
+      <li class="list-group-item">Item 4 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
     </ul>
    </div>
   </div>
@@ -45,32 +42,40 @@
 var itemList = document.getElementById('items');
 var filter = document.getElementById('filter');
 
+// Form submit event
 form.addEventListener('submit', addItem);
+// Delete event
 itemList.addEventListener('click', removeItem);
+// Filter event
 filter.addEventListener('keyup', filterItems);
 
+// Add item
 function addItem(e){
   e.preventDefault();
 
+  // Get input value
   var newItem = document.getElementById('item').value;
+  var newItem2 = document.getElementById('item2').value;
 
+  // Create new li element
   var li = document.createElement('li');
+  // Add class
   li.className = 'list-group-item';
-  li.appendChild(document.createTextNode(newItem));
+  // Add text node with input value
+  li.appendChild(document.createTextNode(newItem + " " + newItem2));
 
-  
+  // Create del button element
   var deleteBtn = document.createElement('button');
-  var editBtn = document.createElement('button');
 
   // Add classes to del button
   deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-  editBtn.className = 'btn  btn-sm float-right';
+
   // Append text node
   deleteBtn.appendChild(document.createTextNode('X'));
-  editBtn.appendChild(document.createTextNode('Edit'));
+
   // Append button to li
   li.appendChild(deleteBtn);
-  li.appendChild();
+
   // Append li to list
   itemList.appendChild(li);
 }
@@ -85,13 +90,12 @@ function removeItem(e){
   }
 }
 
-// Filter Items
 function filterItems(e){
-  // convert text to lowercase
+  
   var text = e.target.value.toLowerCase();
-  // Get lis
+ 
   var items = itemList.getElementsByTagName('li');
-  // Convert to an array
+
   Array.from(items).forEach(function(item){
     var itemName = item.firstChild.textContent;
     if(itemName.toLowerCase().indexOf(text) != -1){
