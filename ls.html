@@ -120,17 +120,17 @@
             callForm.reset();
             window.alert(`Form submit successfully`)
 		});
-        // function getData(){
-        //     for(let email in localStorage){
-        //         const data = localStorage.getItem(email);
-        //         const obj = JSON.parse(data);
-        //         const item = document.createElement('li');
-        //         item.id = email;
-        //         item.innerHTML = `${obj.name}-${obj.email}-${obj.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
-        //         people.appendChild(item);
-                
-        //     }
-        // }
+        window.addEventListener('DOMContentLoaded',getData)
+        async function getData(){
+            const res = await api.get('/data');
+            console.log(res.data)
+            res.data.forEach((each)=>{
+                const item = document.createElement('li');
+                item.id = each._id
+                item.innerHTML = `${each.name}-${each.email}-${each.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
+                people.appendChild(item);
+            })
+        }
 	</script>
 </body>
 </html>
