@@ -65,7 +65,7 @@
         }
 	</style>
 </head>
-<body onload="getData()">
+<body >
         <form id="call-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -78,7 +78,12 @@
         <h2>People Info</h2>
         <ol id="people"> 
         </ol>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        // axios setup
+        const api = axios.create({
+            baseURL: 'https://crudcrud.com/api/782731dc98644ae99d1426c99338273d'
+        })
 		const callForm = document.getElementById('call-form');
 		const submitButton = callForm.querySelector('button[type="submit"]');
 		const nameInput = callForm.querySelector('input[name="name"]');
@@ -86,48 +91,46 @@
 		const phoneInput = callForm.querySelector('input[name="phone"]');
         const people = document.getElementById('people')
 
-        people.addEventListener('click',function(event){
-            const item = event.target.parentNode;
-            const email = item.id;
-            if(event.target.classList.contains('edit')){
-                const data = localStorage.getItem(email);
-                const obj = JSON.parse(data);
-                console.log(obj);
-                nameInput.value = obj.name;
-				emailInput.value = obj.email;
-				phoneInput.value = obj.phone;
-            }
-            item.parentNode.removeChild(item);
-            localStorage.removeItem(email);
-        })
-		callForm.addEventListener('submit', function(event) {
+        // people.addEventListener('click',function(event){
+        //     const item = event.target.parentNode;
+        //     const email = item.id;
+        //     if(event.target.classList.contains('edit')){
+        //         const data = localStorage.getItem(email);
+        //         const obj = JSON.parse(data);
+        //         console.log(obj);
+        //         nameInput.value = obj.name;
+		// 		emailInput.value = obj.email;
+		// 		phoneInput.value = obj.phone;
+        //     }
+        //     item.parentNode.removeChild(item);
+        //     localStorage.removeItem(email);
+        // })
+		callForm.addEventListener('submit',async function(event) {
 			event.preventDefault();
 			const formData = {
 				name: nameInput.value,
 				email: emailInput.value,
 				phone: phoneInput.value,
 			}
-            
-			callForm.reset();
-            window.alert(`Form submit successfully`)
-			const formDataJson = JSON.stringify(formData);
-			localStorage.setItem(formData.email,formDataJson);
+			const res = await api.post("/data",formData)
             const item = document.createElement('li');
-            item.id = formData.email;
+            item.id = res.data._id
             item.innerHTML = `${formData.name}-${formData.email}-${formData.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
             people.appendChild(item);
+            callForm.reset();
+            window.alert(`Form submit successfully`)
 		});
-        function getData(){
-            for(let email in localStorage){
-                const data = localStorage.getItem(email);
-                const obj = JSON.parse(data);
-                const item = document.createElement('li');
-                item.id = email;
-                item.innerHTML = `${obj.name}-${obj.email}-${obj.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
-                people.appendChild(item);
+        // function getData(){
+        //     for(let email in localStorage){
+        //         const data = localStorage.getItem(email);
+        //         const obj = JSON.parse(data);
+        //         const item = document.createElement('li');
+        //         item.id = email;
+        //         item.innerHTML = `${obj.name}-${obj.email}-${obj.phone} <button class='delete'>delete</button> <button class='edit'>edit</button>`;
+        //         people.appendChild(item);
                 
-            }
-        }
+        //     }
+        // }
 	</script>
 </body>
 </html>
