@@ -91,20 +91,23 @@
 		const phoneInput = callForm.querySelector('input[name="phone"]');
         const people = document.getElementById('people')
 
-        // people.addEventListener('click',function(event){
-        //     const item = event.target.parentNode;
-        //     const email = item.id;
-        //     if(event.target.classList.contains('edit')){
-        //         const data = localStorage.getItem(email);
-        //         const obj = JSON.parse(data);
-        //         console.log(obj);
-        //         nameInput.value = obj.name;
-		// 		emailInput.value = obj.email;
-		// 		phoneInput.value = obj.phone;
-        //     }
-        //     item.parentNode.removeChild(item);
-        //     localStorage.removeItem(email);
-        // })
+        people.addEventListener('click',async function(event){
+            const item = event.target.parentNode;
+            const id = item.id;
+            if(event.target.classList.contains('delete')){
+                await api.delete(`/data/${id}`);
+                item.parentNode.removeChild(item);
+            }
+            
+            // if(event.target.classList.contains('edit')){
+            //     const data = localStorage.getItem(email);
+            //     const obj = JSON.parse(data);
+            //     console.log(obj);
+            //     nameInput.value = obj.name;
+			// 	emailInput.value = obj.email;
+			// 	phoneInput.value = obj.phone;
+            // }
+        })
 		callForm.addEventListener('submit',async function(event) {
 			event.preventDefault();
 			const formData = {
