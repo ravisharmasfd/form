@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TODO List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Add TODO</h2>
+        <form id="todo-form">
+          <div class="mb-3">
+            <label for="todo-title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="todo-title" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="todo-description" class="form-label">Description</label>
+            <textarea class="form-control" id="todo-description" name="description" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add TODO</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h2>Completed TODO</h2>
+        <ul id="completed-todos" class="list-group">
+        </ul>
+        <h2>Uncompleted TODO</h2>
+        <ul id="uncompleted-todos" class="list-group">
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Define CRUD API endpoint
+const API_URL = "https://crudcrud.com/api/782731dc98644ae99d1426c99338273d/todoslist";
+// update
+function updateTodoStatus(id, completed) {
+    axios.get(API_URL + "/" + id).then((res)=>{
+        console.log(res.data);
+        let formData = {
+                        title: res.data.title,
+                        description: res.data.description,
+                        completed: completed
+                        };
+    axios.put(API_URL + "/" + id, formData)
+    .then(function(response) {
+      fetchTodos();
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+    })
+}
+// Function to fetch TODOs from the CRUD API
+function fetchTodos() {
+  axios.get(API_URL)
+    .then(function(response) {
+      // Clear TODO lists
+      let completedTodos = [];
+      let uncompletedTodos = [];
+      // Loop through TODOs and add them to the appropriate list
+      response.data.forEach(function(todo) {
+  let li = document.createElement("li");
+  li.textContent = todo.title + " - " + todo.description;
+
+  let completeButton = document.createElement("button");
+  completeButton.classList.add("btn", "btn-success", "mx-1");
+  completeButton.textContent = "Mark as Complete";
+  completeButton.addEventListener("click", function() {
+    updateTodoStatus(todo._id, true);
+  });
+
+  let incompleteButton = document.createElement("button");
+  incompleteButton.classList.add("btn", "btn-warning", "mx-1");
+  incompleteButton.textContent = "Mark as Incomplete";
+  incompleteButton.addEventListener("click", function() {
+    updateTodoStatus(todo._id, false);
+  });
+
+  if (todo.completed) {
+    li.classList.add("list-group-item-success");
+    li.appendChild(incompleteButton);
+    completedTodos.push(li);
+  } else {
+    li.classList.add("list-group-item-warning");
+    li.appendChild(completeButton);
+    uncompletedTodos.push(li);
+  }
+});
+
+      // Update TODO lists
+      document.querySelector("#completed-todos").innerHTML = "";
+      document.querySelector("#uncompleted-todos").innerHTML = "";
+      completedTodos.forEach(function(li) {
+        document.querySelector("#completed-todos").appendChild(li);
+      });
+      uncompletedTodos.forEach(function(li) {
+        document.querySelector("#uncompleted-todos").appendChild(li);
+      });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
+// Function to add a new TODO to the CRUD API
+function addTodo() {
+  let formData = {
+    title: document.querySelector("#todo-title").value,
+    description: document.querySelector("#todo-description").value,
+    completed: false
+  };
+  axios.post(API_URL, formData)
+    .then(function(response) {
+      // Clear the form and fetch updated TODOs
+      document.querySelector("#todo-title").value = "";
+      document.querySelector("#todo-description").value = "";
+      fetchTodos();
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
+// Bind event handlers to the form submit button
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelector("#todo-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    addTodo();
+  });
+  fetchTodos();
+});
+
+  </script>
+</body>
+</html>
