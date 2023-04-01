@@ -36,65 +36,58 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     // Define CRUD API endpoint
-const API_URL = "https://crudcrud.com/api/782731dc98644ae99d1426c99338273d/todoslist";
+const API_URL = "https://crudcrud.com/api/8e98b900854f4b16a9f5c7e77d9df252/todosItem";
 // update
-function updateTodoStatus(id, completed) {
-    axios.get(API_URL + "/" + id).then((res)=>{
-        console.log(res.data);
+async function updateTodoStatus(id, completed) {
+    try {
+      const res = await axios.get(API_URL + "/" + id)
         let formData = {
-                        title: res.data.title,
-                        description: res.data.description,
-                        completed: completed
-                        };
-    axios.put(API_URL + "/" + id, formData)
-    .then(function(response) {
-      fetchTodos();
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-
-    })
-}
-// Function to fetch TODOs from the CRUD API
-function fetchTodos() {
-  axios.get(API_URL)
-    .then(function(response) {
-      // Clear TODO lists
-      let completedTodos = [];
-      let uncompletedTodos = [];
-      // Loop through TODOs and add them to the appropriate list
-      response.data.forEach(function(todo) {
-  let li = document.createElement("li");
-  li.textContent = todo.title + " - " + todo.description;
-
-  let completeButton = document.createElement("button");
-  completeButton.classList.add("btn", "btn-success", "mx-1");
-  completeButton.textContent = "Mark as Complete";
-  completeButton.addEventListener("click", function() {
-    updateTodoStatus(todo._id, true);
-  });
-
-  let incompleteButton = document.createElement("button");
-  incompleteButton.classList.add("btn", "btn-warning", "mx-1");
-  incompleteButton.textContent = "Mark as Incomplete";
-  incompleteButton.addEventListener("click", function() {
-    updateTodoStatus(todo._id, false);
-  });
-
-  if (todo.completed) {
-    li.classList.add("list-group-item-success");
-    li.appendChild(incompleteButton);
-    completedTodos.push(li);
-  } else {
-    li.classList.add("list-group-item-warning");
-    li.appendChild(completeButton);
-    uncompletedTodos.push(li);
+        title: res.data.title,
+        description: res.data.description,
+        completed: completed
+    };
+    const response = await axios.put(API_URL + "/" + id, formData)
+    await fetchTodos();
+    } catch (error) {
+      
+    }
   }
-});
+// Function to fetch TODOs from the CRUD API
+async function fetchTodos() {
+  try {
+    const response = await axios.get(API_URL)
+    let completedTodos = [];
+    let uncompletedTodos = [];
+    // Loop through TODOs and add them to the appropriate list
 
-      // Update TODO lists
-      document.querySelector("#completed-todos").innerHTML = "";
+    response.data.forEach(function(todo) {
+      let li = document.createElement("li");
+      li.textContent = todo.title + " - " + todo.description;
+      let completeButton = document.createElement("button");
+      completeButton.classList.add("btn", "btn-success", "mx-1");
+      completeButton.textContent = "Mark as Complete";
+      completeButton.addEventListener("click", function() {
+        updateTodoStatus(todo._id, true);
+      });
+
+      let incompleteButton = document.createElement("button");
+      incompleteButton.classList.add("btn", "btn-warning", "mx-1");
+      incompleteButton.textContent = "Mark as Incomplete";
+      incompleteButton.addEventListener("click", function() {
+        updateTodoStatus(todo._id, false);
+      });
+      if (todo.completed) {
+        li.classList.add("list-group-item-success");
+        li.appendChild(incompleteButton);
+        completedTodos.push(li);
+      } else {
+        li.classList.add("list-group-item-warning");
+        li.appendChild(completeButton);
+        uncompletedTodos.push(li);
+      }
+  });
+  // Update TODO lists
+  document.querySelector("#completed-todos").innerHTML = "";
       document.querySelector("#uncompleted-todos").innerHTML = "";
       completedTodos.forEach(function(li) {
         document.querySelector("#completed-todos").appendChild(li);
@@ -102,29 +95,28 @@ function fetchTodos() {
       uncompletedTodos.forEach(function(li) {
         document.querySelector("#uncompleted-todos").appendChild(li);
       });
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+  } catch (error) {
+    
+  }
 }
+  
 
 // Function to add a new TODO to the CRUD API
-function addTodo() {
+async function addTodo() {
   let formData = {
     title: document.querySelector("#todo-title").value,
     description: document.querySelector("#todo-description").value,
     completed: false
   };
-  axios.post(API_URL, formData)
-    .then(function(response) {
-      // Clear the form and fetch updated TODOs
-      document.querySelector("#todo-title").value = "";
-      document.querySelector("#todo-description").value = "";
-      fetchTodos();
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+  try {
+    const response = await axios.post(API_URL, formData)
+    // Clear the form and fetch updated TODOs
+    document.querySelector("#todo-title").value = "";
+    document.querySelector("#todo-description").value = "";
+    await fetchTodos();
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 // Bind event handlers to the form submit button
