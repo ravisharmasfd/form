@@ -68,8 +68,11 @@
         <ol class="list-group" id="listData">
             
         </ol>
+
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+         <!-- Axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
             const form = document.getElementById('form');
             const submitButton = form.querySelector('button[type="submit"]');
@@ -78,21 +81,16 @@
             const categoryInput = form.querySelector('input[name="category"]');
             const timeInput = form.querySelector('input[name="time"]');
             const listData = document.getElementById('listData')
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', async function(event) {
                 event.preventDefault(); 
-                console.log('Amount:', amountInput.value);
-                console.log('Description:', descriptionInput.value);
-                console.log('Category:', categoryInput.value);
-                console.log('Time:', timeInput.value);
                 const data = {
                     amount: amountInput.value,
                     description: descriptionInput.value,
                     category: categoryInput.value,
                     time: timeInput.value
                 }
-                const dataStr = JSON.stringify(data)
-                const id = Date.now().toLocaleString();
-                localStorage.setItem(id,dataStr);
+                const response = await axios.post("http://localhost:3000/expense",data);
+                const id = response.data.id
                 const item = document.createElement('li');
                 item.id = id;
                 item.classList.add('list-group-item');
@@ -104,22 +102,34 @@
                 form.reset();
             });
 
-            listData.addEventListener('click',function(event){
+            listData.addEventListener('click',async function(event){
             const item = event.target.parentNode;
             const id = item.id;
             if(event.target.classList.contains('btn-primary')){
-                const data = localStorage.getItem(id);
-                const obj = JSON.parse(data);
-                console.log(obj);
+               const res =await axios.get('http://localhost:3000/expense/'+id);
+                const obj = res.data
                 amountInput.value = obj.amount;
                 descriptionInput.value = obj.description;
                 categoryInput.value = obj.category;
                 timeInput.value = obj.time
             }
             item.parentNode.removeChild(item);
-            localStorage.removeItem(id);
+            await axios.delete('http://localhost:3000/expense/'+id);
         })
-
+          document.onload(async()=>{
+            const res = await axios.get('http://localhost:3000/expense');
+            const data = res.data;
+            const list = document.getElementById('listData');
+            list.innerHTML = '';
+            data.forEach(item=>{
+              const item = document.createElement('li');
+              item.id = item.id;
+              item.classList.add('list-group-item');
+              item.innerHTML = `${item.amount} ${item.description} ${item.category} ${item.time} <button type="button" class="btn btn-danger">Delete</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>`;
+              list.appendChild(item);
+              })
+          })
         </script>
 </body>
 </html>
