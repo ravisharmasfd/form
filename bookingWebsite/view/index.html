@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Booking Form</title>
+</head>
+<body>
+  <h1>Booking Form</h1>
+
+  <!-- Booking Form -->
+  <form id="booking-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="phone">Phone:</label>
+    <input type="tel" id="phone" name="phone" required>
+
+    <button type="submit">Book</button>
+  </form>
+
+  <!-- Booking List -->
+  <h2>Bookings:</h2>
+  <ul id="booking-list"></ul>
+
+  <!-- Axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <!-- Script -->
+  <script>
+    // Get the booking list from the backend server
+    axios.get('http://localhost:3000/bookings')
+      .then(response => {
+        const bookings = response.data;
+        const bookingList = document.getElementById('booking-list');
+        bookings.forEach(booking => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${booking.name} - ${booking.email} - ${booking.phone}
+            <button class="delete" data-id="${booking.id}">Delete</button>
+            <button class="edit" data-id="${booking.id}">Edit</button>
+          `;
+          bookingList.appendChild(li);
+        });
+
+        // Add event listeners to delete and edit buttons
+        const deleteButtons = document.querySelectorAll('.delete');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', event => {
+            const bookingId = event.target.getAttribute('data-id');
+            axios.delete(`http://localhost:3000/bookings/${bookingId}`)
+              .then(() => {
+                location.reload();
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          });
+        });
+
+        const editButtons = document.querySelectorAll('.edit');
+        editButtons.forEach(button => {
+          button.addEventListener('click', event => {
+            const bookingId = event.target.getAttribute('data-id');
+            // TODO: Implement edit functionality
+          });
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    // Add a new booking to the backend server when the form is submitted
+    const bookingForm = document.getElementById('booking-form');
+    bookingForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(bookingForm);
+      const bookingData = Object.fromEntries(formData.entries());
+      axios.post('http://localhost:3000/bookings', bookingData)
+        .then(() => {
+          location.reload();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    });
+  </script>
+</body>
+</html>
