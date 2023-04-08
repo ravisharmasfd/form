@@ -116,18 +116,18 @@
             item.parentNode.removeChild(item);
             await axios.delete('http://localhost:3000/expense/'+id);
         })
-          document.onload(async()=>{
+        document.addEventListener("DOMContentLoaded",async()=>{
             const res = await axios.get('http://localhost:3000/expense');
             const data = res.data;
             const list = document.getElementById('listData');
             list.innerHTML = '';
             data.forEach(item=>{
-              const item = document.createElement('li');
-              item.id = item.id;
-              item.classList.add('list-group-item');
-              item.innerHTML = `${item.amount} ${item.description} ${item.category} ${item.time} <button type="button" class="btn btn-danger">Delete</button>
+              const li = document.createElement('li');
+              li.id = item.id;
+              li.classList.add('list-group-item');
+              li.innerHTML = `${item.amount} ${item.description} ${item.category} ${item.time} <button type="button" class="btn btn-danger">Delete</button>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>`;
-              list.appendChild(item);
+              list.appendChild(li);
               })
           })
         </script>
