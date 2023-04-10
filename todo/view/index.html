@@ -36,17 +36,12 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     // Define CRUD API endpoint
-const API_URL = "https://crudcrud.com/api/8e98b900854f4b16a9f5c7e77d9df252/todosItem";
+const API_URL = "/todo";
 // update
 async function updateTodoStatus(id, completed) {
+
     try {
-      const res = await axios.get(API_URL + "/" + id)
-        let formData = {
-        title: res.data.title,
-        description: res.data.description,
-        completed: completed
-    };
-    const response = await axios.put(API_URL + "/" + id, formData)
+    const response = await axios.put(API_URL + "/" + id, {completed})
     await fetchTodos();
     } catch (error) {
       
@@ -67,14 +62,14 @@ async function fetchTodos() {
       completeButton.classList.add("btn", "btn-success", "mx-1");
       completeButton.textContent = "Mark as Complete";
       completeButton.addEventListener("click", function() {
-        updateTodoStatus(todo._id, true);
+        updateTodoStatus(todo.id, true);
       });
 
       let incompleteButton = document.createElement("button");
       incompleteButton.classList.add("btn", "btn-warning", "mx-1");
       incompleteButton.textContent = "Mark as Incomplete";
       incompleteButton.addEventListener("click", function() {
-        updateTodoStatus(todo._id, false);
+        updateTodoStatus(todo.id, false);
       });
       if (todo.completed) {
         li.classList.add("list-group-item-success");
@@ -106,7 +101,6 @@ async function addTodo() {
   let formData = {
     title: document.querySelector("#todo-title").value,
     description: document.querySelector("#todo-description").value,
-    completed: false
   };
   try {
     const response = await axios.post(API_URL, formData)

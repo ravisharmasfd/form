@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const expenseRouter = require('./routes/expense');
 const homeRouter = require('./routes/home')
+const todoRouter = require('./routes/todo')
 const sequelize = require('./utls/database')
 const cors = require('cors')
 
@@ -13,7 +13,7 @@ app.use(cors())
 app.use(bodyParser.json());
 
 
-app.use("/expense",expenseRouter);
+app.use("/todo",todoRouter);
 app.use('/',homeRouter);
 
 // Create Booking table if not exists
